@@ -1,4 +1,4 @@
-package com.aymax.forum.entitie;
+package com.aymax.forum.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

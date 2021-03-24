@@ -3,7 +3,7 @@ package com.aymax.forum.controller;
 import javax.validation.Valid;
 
 
-import com.aymax.forum.entitie.User;
+import com.aymax.forum.entity.User;
 import com.aymax.forum.repository.UserRepository;
 import com.aymax.forum.security.request.LoginForm;
 import com.aymax.forum.security.response.JwtResponse;
