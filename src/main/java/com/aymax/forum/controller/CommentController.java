@@ -10,7 +10,11 @@ import java.util.List;
 @RequestMapping("comment")
 public class CommentController {
 
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping("/create")
     public Comment createComment(@RequestBody Comment comment ){

@@ -66,4 +66,9 @@ public class PostServiceImpl implements PostService {
             throw new Exception("post with id = " + id + " not found. ");
         }
     }
+
+    @Override
+    public List<Post> getAllPosts() {
+        return this.postRepository.findAll();
+    }
 }

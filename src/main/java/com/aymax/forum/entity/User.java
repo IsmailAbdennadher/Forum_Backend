@@ -1,4 +1,6 @@
 package com.aymax.forum.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +24,10 @@ public class User implements Serializable {
     private String picture ;
 
 
+    @JsonManagedReference(value = "comment-user")
     @OneToMany(mappedBy = "comment_owner")
     private List<Comment> comments ;
+    @JsonManagedReference(value = "post-user")
     @OneToMany(mappedBy = "post_owner")
     private List<Post> posts ;
 

@@ -27,9 +27,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment createComment(Comment comment) {
-        if(comment != null && comment.getBelong_post() != null)
+        if(comment != null && comment.getBelong_post() != null && comment.getComment_owner() != null)
             return this.commentRepository.save(comment);
-        return null;
+        return null; //TODO create a custom Exception
     }
 
     @Override

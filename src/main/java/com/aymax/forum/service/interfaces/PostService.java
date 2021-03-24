@@ -10,4 +10,5 @@ public interface PostService {
     Post getPost(long post_id);
     List<Post> getUserAllPosts(long user_id);
     void deletePost(long id) throws Exception;
+    List<Post> getAllPosts();
 }
