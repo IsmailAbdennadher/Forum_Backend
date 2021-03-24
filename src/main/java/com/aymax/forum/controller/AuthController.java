@@ -1,12 +1,12 @@
-package com.aymax.forum.controllers;
+package com.aymax.forum.controller;
 
 import javax.validation.Valid;
 
 
-import com.aymax.forum.entities.User;
+import com.aymax.forum.entitie.User;
 import com.aymax.forum.repository.UserRepository;
-import com.aymax.forum.request.LoginForm;
-import com.aymax.forum.response.JwtResponse;
+import com.aymax.forum.security.request.LoginForm;
+import com.aymax.forum.security.response.JwtResponse;
 import com.aymax.forum.security.jwt.JwtUtils;
 import com.aymax.forum.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

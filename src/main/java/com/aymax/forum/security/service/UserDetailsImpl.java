@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 
-import com.aymax.forum.entities.User;
+import com.aymax.forum.entitie.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

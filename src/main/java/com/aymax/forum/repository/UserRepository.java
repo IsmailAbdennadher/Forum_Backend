@@ -1,6 +1,6 @@
 package com.aymax.forum.repository;
 
-import com.aymax.forum.entities.User;
+import com.aymax.forum.entitie.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.aymax.forum.entities;
+package com.aymax.forum.entitie;
 
 import javax.persistence.*;
 import java.io.Serializable;

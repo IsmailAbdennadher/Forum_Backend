@@ -1,4 +1,4 @@
-package com.aymax.forum.request;
+package com.aymax.forum.security.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

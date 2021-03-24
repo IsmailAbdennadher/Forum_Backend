@@ -1,6 +1,4 @@
-package com.aymax.forum.response;
-
-import java.util.List;
+package com.aymax.forum.security.response;
 
 public class JwtResponse {
     private Long id;

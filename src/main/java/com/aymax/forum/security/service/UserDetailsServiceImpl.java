@@ -1,6 +1,6 @@
 package com.aymax.forum.security.service;
 
-import com.aymax.forum.entities.User;
+import com.aymax.forum.entitie.User;
 import com.aymax.forum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
