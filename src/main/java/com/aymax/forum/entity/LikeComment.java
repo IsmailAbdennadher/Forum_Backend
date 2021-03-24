@@ -1,5 +1,9 @@
 package com.aymax.forum.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
@@ -8,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity(name = "like_comment")
+@Data @NoArgsConstructor @AllArgsConstructor
 public class LikeComment implements Serializable {
 
     @EmbeddedId
@@ -15,23 +20,5 @@ public class LikeComment implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateoflike;
 
-    public LikeComment() {
-    }
-
-    public LikeCommentPk getLikeCommentPk() {
-        return likeCommentPk;
-    }
-
-    public void setLikeCommentPk(LikeCommentPk likeCommentPk) {
-        this.likeCommentPk = likeCommentPk;
-    }
-
-    public Date getDateoflike() {
-        return dateoflike;
-    }
-
-    public void setDateoflike(Date dateoflike) {
-        this.dateoflike = dateoflike;
-    }
 
 }
