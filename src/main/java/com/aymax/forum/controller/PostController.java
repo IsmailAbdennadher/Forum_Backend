@@ -3,6 +3,7 @@ package com.aymax.forum.controller;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.entity.User;
 import com.aymax.forum.service.interfaces.PostService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,12 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public Post createPost(@RequestBody Post post ){
+    public Post createPost(@RequestBody Post post ) throws Exception {
         return this.postService.createPost(post);
+    }
+    @PostMapping("/update")
+    public Post updatePost(@RequestBody Post post ) throws Exception {
+        return this.postService.updatePost(post);
     }
     @GetMapping("/{postid}")
     public Post getPost(@PathVariable long postid){

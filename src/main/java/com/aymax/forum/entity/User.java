@@ -31,6 +31,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "post_owner")
     private List<Post> posts ;
 
+    public User(Long id){
+        this.id = id;
+    }
     public User(String username , String password){
         this.username = username;
         this.password = password;

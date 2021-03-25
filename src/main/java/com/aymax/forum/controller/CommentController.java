@@ -20,12 +20,20 @@ public class CommentController {
     public Comment createComment(@RequestBody Comment comment ){
         return this.commentService.createComment(comment);
     }
-    @GetMapping("/{postid}")
+    @PostMapping("/update")
+    public Comment updateComment(@RequestBody Comment comment){
+        return this.commentService.updateComment(comment);
+    }
+    @GetMapping("post/get/{postid}")
     public List<Comment> getCommentsOfPost(@PathVariable long postid){
         return this.commentService.getCommentsOfPost(postid);
     }
     @GetMapping("/{postid}/{userid}")
     public List<Comment> getUserCommentsOfPost(@PathVariable long postid,@PathVariable long userid){
         return this.commentService.getUserCommentsOfPost(postid,userid);
+    }
+    @GetMapping("get/{commentid}")
+    public Comment getCommentById(@PathVariable long commentid){
+        return this.commentService.getById(commentid);
     }
 }

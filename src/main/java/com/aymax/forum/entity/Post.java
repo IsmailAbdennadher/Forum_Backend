@@ -24,12 +24,19 @@ public class Post implements Serializable {
     private Date dateofpublication;
     private String attachement;
     @JsonBackReference(value = "post-user")
-    @ManyToOne(cascade = CascadeType.ALL , optional = false)
+    @ManyToOne(optional = false)
     @NotNull
     private User post_owner;
     @JsonManagedReference
-    @OneToMany(mappedBy = "belong_post")
+    @OneToMany(mappedBy = "belong_post" , cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
+    public Post() {
+    }
+
+    public Post(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
