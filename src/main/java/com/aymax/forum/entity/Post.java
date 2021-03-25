@@ -1,13 +1,17 @@
 package com.aymax.forum.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Post implements Serializable {
@@ -19,9 +23,20 @@ public class Post implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateofpublication;
     private String attachement;
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference(value = "post-user")
+    @ManyToOne(optional = false)
+    @NotNull
     private User post_owner;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "belong_post" , cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
+    public Post() {
+    }
+
+    public Post(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
@@ -69,5 +84,13 @@ public class Post implements Serializable {
 
     public void setPost_owner(User post_owner) {
         this.post_owner = post_owner;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

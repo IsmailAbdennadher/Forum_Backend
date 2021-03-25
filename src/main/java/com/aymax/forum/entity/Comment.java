@@ -1,6 +1,9 @@
 package com.aymax.forum.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,9 +17,11 @@ public class Comment implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateofpublication;
     private String attachement;
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JsonBackReference(value = "comment-user")
     private User comment_owner;
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JsonBackReference
     private Post belong_post;
 
     public long getId() {
@@ -54,6 +59,7 @@ public class Comment implements Serializable {
         return comment_owner;
     }
 
+    @NotNull
     public void setComment_owner(User comment_owner) {
         this.comment_owner = comment_owner;
     }

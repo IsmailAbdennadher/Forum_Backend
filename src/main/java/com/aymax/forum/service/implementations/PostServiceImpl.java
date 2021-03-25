@@ -5,8 +5,12 @@ import com.aymax.forum.entity.Post;
 import com.aymax.forum.entity.User;
 import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.repository.UserRepository;
+import com.aymax.forum.security.service.UserDetailsImpl;
 import com.aymax.forum.service.interfaces.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,28 +27,32 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(Post post) {
-
-        if(post != null ) {
-            User u = this.userRepository.findById(post.getPost_owner().getId()).get();
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(post != null && userDetails.getId() != null) {
+            long id = userDetails.getId();
+            User u = this.userRepository.findById(id).get();
             post.setPost_owner(u);
             return this.postRepository.save(post);
         }
-        return post;
+        throw new NullPointerException("le post ou utilisateur fournit est null");
     }
 
     @Override
     public Post updatePost(Post post) {
-        if(post != null){
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(post != null && userDetails.getId() != null){
             Optional<Post> p = this.postRepository.findById(post.getId());
             Post updatedPost = p.get();
-            updatedPost.setPost_owner(post.getPost_owner());
+            long id = userDetails.getId();
+            User u = this.userRepository.findById(id).get();
+            updatedPost.setPost_owner(u);
             updatedPost.setAttachement(post.getAttachement());
             updatedPost.setPost_text(post.getPost_text());
             updatedPost.setTitle(post.getTitle());
             updatedPost.setDateofpublication(post.getDateofpublication());
             return this.postRepository.save(updatedPost);
         }
-        return null;
+        throw new NullPointerException("le post ou utilisateur fournit est null");
     }
 
     @Override
@@ -65,5 +73,10 @@ public class PostServiceImpl implements PostService {
         catch (Exception e){
             throw new Exception("post with id = " + id + " not found. ");
         }
+    }
+
+    @Override
+    public List<Post> getAllPosts() {
+        return this.postRepository.findAll(Sort.by(Sort.Direction.DESC,"dateofpublication"));
     }
 }

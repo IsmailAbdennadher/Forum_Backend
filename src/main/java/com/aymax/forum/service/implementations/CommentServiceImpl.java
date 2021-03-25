@@ -6,9 +6,11 @@ import com.aymax.forum.entity.User;
 import com.aymax.forum.repository.CommentRepository;
 import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.repository.UserRepository;
+import com.aymax.forum.security.service.UserDetailsImpl;
 import com.aymax.forum.service.interfaces.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,14 +29,23 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment createComment(Comment comment) {
-        if(comment != null && comment.getBelong_post() != null)
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = userDetails.getId();
+        User u = this.userRepository.findById(id).get();
+        comment.setComment_owner(u);
+        if(comment.getBelong_post() != null && comment.getComment_owner() != null) {
             return this.commentRepository.save(comment);
-        return null;
+        }
+        throw new NullPointerException("le post fournit est null");
     }
 
     @Override
     public Comment updateComment(Comment comment) {
-        if(comment != null){
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = userDetails.getId();
+        User u = this.userRepository.findById(id).get();
+        comment.setComment_owner(u);
+        if(comment.getBelong_post() != null && comment.getComment_owner() != null){
             Optional<Comment> c = this.commentRepository.findById(comment.getId());
             Comment updatedComment = c.get();
             updatedComment.setComment_owner(comment.getComment_owner());
@@ -44,7 +55,15 @@ public class CommentServiceImpl implements CommentService {
             updatedComment.setDateofpublication(comment.getDateofpublication());
             return this.commentRepository.save(updatedComment);
         }
-        return null;
+        throw new NullPointerException("le post fournit est null");
+    }
+
+    @Override
+    public Comment getById(long id) {
+        if(this.commentRepository.findById(id).isPresent()){
+            return this.commentRepository.findById(id).get();
+        }
+        throw new NullPointerException("comment not found");
     }
 
     @Override
