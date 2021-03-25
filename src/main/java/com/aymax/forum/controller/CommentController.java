@@ -2,6 +2,8 @@ package com.aymax.forum.controller;
 
 import com.aymax.forum.entity.Comment;
 import com.aymax.forum.service.interfaces.CommentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +37,17 @@ public class CommentController {
     @GetMapping("get/{commentid}")
     public Comment getCommentById(@PathVariable long commentid){
         return this.commentService.getById(commentid);
+    }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable long id) throws Exception {
+        try
+        {
+            this.commentService.deleteComment(id);
+            return new ResponseEntity<Comment>(HttpStatus.OK);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }

@@ -1,20 +1,17 @@
 package com.aymax.forum.service.implementations;
 
-import com.aymax.forum.entity.Comment;
-import com.aymax.forum.entity.Post;
-import com.aymax.forum.entity.User;
+import com.aymax.forum.entity.*;
 import com.aymax.forum.repository.CommentRepository;
+import com.aymax.forum.repository.LikeCommentRepository;
 import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.repository.UserRepository;
 import com.aymax.forum.security.service.UserDetailsImpl;
 import com.aymax.forum.service.interfaces.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Optional;
 
 @Service
@@ -26,6 +23,8 @@ public class CommentServiceImpl implements CommentService {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LikeCommentRepository likeCommentRepository;
 
     @Override
     public Comment createComment(Comment comment) {
@@ -81,7 +80,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(long id) throws Exception {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id_user = userDetails.getId();
+        LikeCommentPk lk = new LikeCommentPk();
+        lk.setComment_id(id);
+        lk.setUser_id(id_user);
         try {
+            this.likeCommentRepository.deleteByLikeCommentPk(lk);
             this.commentRepository.deleteById(id);
         }
         catch (Exception e){
