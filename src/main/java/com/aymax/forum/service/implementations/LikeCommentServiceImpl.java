@@ -18,13 +18,15 @@ public class LikeCommentServiceImpl implements LikeCommentService {
     @Autowired
     private LikeCommentRepository repository;
 
-    public boolean like(Long idUser , Long idComment){
+    public void like(Long idUser , Long idComment){
         LikeCommentPk likeCommentPk = new LikeCommentPk();
 
         likeCommentPk.setUser_id(idUser);
         likeCommentPk.setComment_id(idComment);
-        if(repository.existsByLikeCommenttPk(likeCommentPk)){
-            return false;
+        if(isLiked(idUser,idComment)){
+
+            repository.delete(repository.findByLikeCommentPk(likeCommentPk));
+            System.out.println("Dislike");
         }
         else{
             LikeComment likeComment = new LikeComment();
@@ -32,7 +34,22 @@ public class LikeCommentServiceImpl implements LikeCommentService {
             likeComment.setDateoflike(new Date());
 
             repository.save(likeComment);
-            return true;
+            System.out.println("Like");
+
         }
     }
+
+    public boolean isLiked(Long idUser , Long idComment){
+        LikeCommentPk likeCommentPk = new LikeCommentPk();
+
+        likeCommentPk.setUser_id(idUser);
+        likeCommentPk.setComment_id(idComment);
+        if(repository.existsByLikeCommentPk(likeCommentPk)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

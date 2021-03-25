@@ -1,5 +1,7 @@
 package com.aymax.forum.service.implementations;
 
+import com.aymax.forum.entity.LikeComment;
+import com.aymax.forum.entity.LikeCommentPk;
 import com.aymax.forum.entity.LikePost;
 import com.aymax.forum.entity.LikePostPk;
 import com.aymax.forum.repository.LikePostRepository;
@@ -19,13 +21,15 @@ public class LikePostServiceImpl implements LikePostService {
     @Autowired
     private LikePostRepository repository;
 
-    public boolean like(Long idUser , Long idPost){
+    public void like(Long idUser , Long idPost){
         LikePostPk likePostPk = new LikePostPk();
 
         likePostPk.setUser_id(idUser);
         likePostPk.setPost_id(idPost);
-        if(repository.existsByLikePostPk(likePostPk)){
-            return false;
+        if(isLiked(idUser,idPost)){
+
+            repository.delete(repository.findByLikePostPk(likePostPk));
+            System.out.println("Dislike");
         }
         else{
             LikePost likePost = new LikePost();
@@ -33,7 +37,21 @@ public class LikePostServiceImpl implements LikePostService {
             likePost.setDateoflike(new Date());
 
             repository.save(likePost);
+            System.out.println("Like");
+
+        }
+    }
+
+    public boolean isLiked(Long idUser , Long idPost){
+        LikePostPk likePostPk = new LikePostPk();
+
+        likePostPk.setUser_id(idUser);
+        likePostPk.setPost_id(idPost);
+        if(repository.existsByLikePostPk(likePostPk)){
             return true;
+        }
+        else{
+            return false;
         }
     }
 }

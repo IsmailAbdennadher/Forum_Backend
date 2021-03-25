@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LikeCommentRepository extends JpaRepository<LikeComment, Long> {
 
-    Boolean existsByLikeCommenttPk(LikeCommentPk id);
+    Boolean existsByLikeCommentPk(LikeCommentPk id);
+
+    LikeComment findByLikeCommentPk(LikeCommentPk id);
 }
