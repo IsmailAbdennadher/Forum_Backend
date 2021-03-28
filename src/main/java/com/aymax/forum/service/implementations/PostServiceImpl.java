@@ -3,6 +3,7 @@ package com.aymax.forum.service.implementations;
 import com.aymax.forum.entity.LikePostPk;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.entity.User;
+import com.aymax.forum.repository.CommentRepository;
 import com.aymax.forum.repository.LikePostRepository;
 import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.repository.UserRepository;
@@ -25,6 +26,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Autowired
     private LikePostRepository likePostRepository;
@@ -88,5 +92,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAllPosts() {
         return this.postRepository.findAll(Sort.by(Sort.Direction.DESC,"dateofpublication"));
+    }
+
+    @Override
+    public int getNBCommentsOfPost(long post_id) {
+        Post p = this.postRepository.findById(post_id).get();
+        return this.commentRepository.countCommentsByBelong_post(p);
     }
 }

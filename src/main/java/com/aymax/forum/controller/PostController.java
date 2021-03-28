@@ -1,5 +1,6 @@
 package com.aymax.forum.controller;
 
+import com.aymax.forum.entity.Comment;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.service.interfaces.PostService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -49,5 +51,9 @@ public class PostController {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+    @GetMapping("get/number/{postid}")
+    public int getNBCommentsOfPost(@PathVariable long postid){
+        return this.postService.getNBCommentsOfPost(postid);
     }
 }

@@ -15,4 +15,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByBelong_post(Post post);
     @Query(value = "select a from Comment a where a.belong_post = ?1 and a.comment_owner = ?2")
     List<Comment> findByBelong_postAndComment_owner(Post post, User user);
+    @Query(value = "select count(*) from Comment a where a.belong_post = ?1",nativeQuery = true)
+    int countCommentsByBelong_post(Post post);
 }
