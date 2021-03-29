@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("like/comment")
 public class likeCommentController {
@@ -18,7 +18,7 @@ public class likeCommentController {
     public ResponseEntity<LikeComment> like(@PathVariable("idUser") Long idUser, @PathVariable("idComment") Long idComment){
          return likeService.like(idUser,idComment);
     }
-    @GetMapping("isliked/{idUser}/{idComment}")
+    @GetMapping("isLiked/{idUser}/{idComment}")
     public boolean isLiked(@PathVariable("idUser") Long idUser, @PathVariable("idComment") Long idComment){
         return likeService.isLiked(idUser,idComment);
     }
