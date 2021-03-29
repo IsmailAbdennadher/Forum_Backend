@@ -15,8 +15,7 @@ import java.util.List;
 
 @Entity
 public class Post implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String post_text;
