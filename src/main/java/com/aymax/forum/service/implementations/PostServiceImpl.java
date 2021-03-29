@@ -1,8 +1,10 @@
 package com.aymax.forum.service.implementations;
 
-import com.aymax.forum.entity.Comment;
+import com.aymax.forum.entity.LikePostPk;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.entity.User;
+import com.aymax.forum.repository.CommentRepository;
+import com.aymax.forum.repository.LikePostRepository;
 import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.repository.UserRepository;
 import com.aymax.forum.security.service.UserDetailsImpl;
@@ -24,6 +26,12 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private LikePostRepository likePostRepository;
 
     @Override
     public Post createPost(Post post) {
@@ -67,7 +75,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(long id) throws Exception {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id_user = userDetails.getId();
+        LikePostPk lk = new LikePostPk();
+        lk.setPost_id(id);
+        lk.setUser_id(id_user);
         try {
+            this.likePostRepository.deleteByLikePostPk(lk);
             this.postRepository.deleteById(id);
         }
         catch (Exception e){
@@ -78,5 +92,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAllPosts() {
         return this.postRepository.findAll(Sort.by(Sort.Direction.DESC,"dateofpublication"));
+    }
+
+    @Override
+    public int getNBCommentsOfPost(long post_id) {
+        return this.commentRepository.countCommentsByBelong_post(post_id);
     }
 }

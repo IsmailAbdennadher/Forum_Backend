@@ -1,13 +1,15 @@
 package com.aymax.forum.controller;
 
+import com.aymax.forum.entity.Comment;
 import com.aymax.forum.entity.Post;
-import com.aymax.forum.entity.User;
 import com.aymax.forum.service.interfaces.PostService;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("post")
 public class PostController {
@@ -26,7 +28,7 @@ public class PostController {
     public Post updatePost(@RequestBody Post post ) throws Exception {
         return this.postService.updatePost(post);
     }
-    @GetMapping("/{postid}")
+    @GetMapping("get/{postid}")
     public Post getPost(@PathVariable long postid){
         return this.postService.getPost(postid);
     }
@@ -37,5 +39,21 @@ public class PostController {
     @GetMapping("/all")
     public List<Post> getAllPosts(){
         return this.postService.getAllPosts();
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Post> deletePost(@PathVariable long id){
+        try
+        {
+            this.postService.deletePost(id);
+            return new ResponseEntity<Post>(HttpStatus.OK);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+    @GetMapping("get/number/{postid}")
+    public int getNBCommentsOfPost(@PathVariable long postid){
+        return this.postService.getNBCommentsOfPost(postid);
     }
 }

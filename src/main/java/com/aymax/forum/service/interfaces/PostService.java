@@ -11,4 +11,5 @@ public interface PostService {
     List<Post> getUserAllPosts(long user_id);
     void deletePost(long id) throws Exception;
     List<Post> getAllPosts();
+    int getNBCommentsOfPost(long post_id);
 }

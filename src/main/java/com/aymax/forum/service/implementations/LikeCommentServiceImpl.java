@@ -9,6 +9,8 @@ import com.aymax.forum.repository.LikeCommentRepository;
 import com.aymax.forum.repository.LikePostRepository;
 import com.aymax.forum.service.interfaces.LikeCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,7 +20,7 @@ public class LikeCommentServiceImpl implements LikeCommentService {
     @Autowired
     private LikeCommentRepository repository;
 
-    public void like(Long idUser , Long idComment){
+    public ResponseEntity<LikeComment> like(Long idUser , Long idComment){
         LikeCommentPk likeCommentPk = new LikeCommentPk();
 
         likeCommentPk.setUser_id(idUser);
@@ -27,14 +29,15 @@ public class LikeCommentServiceImpl implements LikeCommentService {
 
             repository.delete(repository.findByLikeCommentPk(likeCommentPk));
             System.out.println("Dislike");
+            return new ResponseEntity<LikeComment>(repository.findByLikeCommentPk(likeCommentPk), HttpStatus.valueOf(204));
         }
         else{
             LikeComment likeComment = new LikeComment();
             likeComment.setLikeCommentPk(likeCommentPk);
             likeComment.setDateoflike(new Date());
 
-            repository.save(likeComment);
-            System.out.println("Like");
+            LikeComment lk = repository.save(likeComment);
+            return new ResponseEntity<LikeComment>(lk, HttpStatus.CREATED);
 
         }
     }
@@ -50,6 +53,11 @@ public class LikeCommentServiceImpl implements LikeCommentService {
         else{
             return false;
         }
+    }
+
+    @Override
+    public int countCommentLikesByComment(long idComment) {
+        return this.repository.countCommentLikesByComment(idComment);
     }
 
 }

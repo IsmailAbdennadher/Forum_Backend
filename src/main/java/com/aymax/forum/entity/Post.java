@@ -23,7 +23,6 @@ public class Post implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateofpublication;
     private String attachement;
-    @JsonBackReference(value = "post-user")
     @ManyToOne(optional = false)
     @NotNull
     private User post_owner;
