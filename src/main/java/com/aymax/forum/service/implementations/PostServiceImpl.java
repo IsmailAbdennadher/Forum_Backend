@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class PostServiceImpl implements PostService {
             long id = userDetails.getId();
             User u = this.userRepository.findById(id).get();
             post.setPost_owner(u);
+            post.setDateofpublication(new Date());
             return this.postRepository.save(post);
         }
         throw new NullPointerException("le post ou utilisateur fournit est null");
