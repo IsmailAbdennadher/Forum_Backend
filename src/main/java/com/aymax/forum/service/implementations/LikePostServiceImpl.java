@@ -7,6 +7,8 @@ import com.aymax.forum.entity.LikePostPk;
 import com.aymax.forum.repository.LikePostRepository;
 import com.aymax.forum.service.interfaces.LikePostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +23,7 @@ public class LikePostServiceImpl implements LikePostService {
     @Autowired
     private LikePostRepository repository;
 
-    public void like(Long idUser , Long idPost){
+    public ResponseEntity<LikePost> like(Long idUser , Long idPost){
         LikePostPk likePostPk = new LikePostPk();
 
         likePostPk.setUser_id(idUser);
@@ -30,6 +32,7 @@ public class LikePostServiceImpl implements LikePostService {
 
             repository.delete(repository.findByLikePostPk(likePostPk));
             System.out.println("Dislike");
+            return new ResponseEntity<>(repository.findByLikePostPk(likePostPk), HttpStatus.valueOf(204));
         }
         else{
             LikePost likePost = new LikePost();
@@ -38,6 +41,8 @@ public class LikePostServiceImpl implements LikePostService {
 
             repository.save(likePost);
             System.out.println("Like");
+            LikePost lp = repository.save(likePost);
+            return new ResponseEntity<>(lp, HttpStatus.CREATED);
 
         }
     }
@@ -53,5 +58,10 @@ public class LikePostServiceImpl implements LikePostService {
         else{
             return false;
         }
+    }
+
+    @Override
+    public int countPostLikes(long idPost) {
+        return this.repository.countPostLikes(idPost);
     }
 }

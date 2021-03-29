@@ -37,7 +37,7 @@ public class LikeCommentServiceImpl implements LikeCommentService {
             likeComment.setDateoflike(new Date());
 
             LikeComment lk = repository.save(likeComment);
-            return new ResponseEntity<LikeComment>(lk, HttpStatus.CREATED);
+            return new ResponseEntity<>(lk, HttpStatus.CREATED);
 
         }
     }

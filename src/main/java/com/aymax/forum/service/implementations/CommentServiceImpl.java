@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
         long id = userDetails.getId();
         User u = this.userRepository.findById(id).get();
         comment.setComment_owner(u);
+        comment.setDateofpublication(new Date());
         if(comment.getBelong_post() != null && comment.getComment_owner() != null) {
             return this.commentRepository.save(comment);
         }
