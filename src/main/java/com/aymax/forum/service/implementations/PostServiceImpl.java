@@ -96,7 +96,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public int getNBCommentsOfPost(long post_id) {
-        Post p = this.postRepository.findById(post_id).get();
-        return this.commentRepository.countCommentsByBelong_post(p);
+        return this.commentRepository.countCommentsByBelong_post(post_id);
     }
 }

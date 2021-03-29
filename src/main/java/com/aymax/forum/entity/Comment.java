@@ -10,20 +10,17 @@ import java.util.Date;
 @Entity
 public class Comment implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long id;
     private String comment_text;
-    @Temporal(TemporalType.DATE)
     private Date dateofpublication;
     private String attachement;
-    @ManyToOne(optional = false)
-    @JsonBackReference(value = "comment-user")
     private User comment_owner;
-    @ManyToOne(optional = false)
-    @JsonBackReference
+
     private Post belong_post;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
@@ -39,6 +36,7 @@ public class Comment implements Serializable {
         this.comment_text = comment_text;
     }
 
+    @Temporal(TemporalType.DATE)
     public Date getDateofpublication() {
         return dateofpublication;
     }
@@ -55,15 +53,18 @@ public class Comment implements Serializable {
         this.attachement = attachement;
     }
 
+    @ManyToOne(optional = false,fetch=FetchType.EAGER)
+    @NotNull
     public User getComment_owner() {
         return comment_owner;
     }
 
-    @NotNull
     public void setComment_owner(User comment_owner) {
         this.comment_owner = comment_owner;
     }
 
+    @ManyToOne(optional = false)
+    @JsonBackReference
     public Post getBelong_post() {
         return belong_post;
     }

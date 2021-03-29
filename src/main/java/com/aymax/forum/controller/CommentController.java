@@ -1,6 +1,7 @@
 package com.aymax.forum.controller;
 
 import com.aymax.forum.entity.Comment;
+import com.aymax.forum.entity.User;
 import com.aymax.forum.service.interfaces.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +51,9 @@ public class CommentController {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+    @GetMapping("get/user/{commentid}")
+    public User getUserByComment(@PathVariable long commentid){
+        return this.commentService.getUserbyCommentId(commentid);
     }
 }

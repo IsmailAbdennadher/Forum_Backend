@@ -93,4 +93,10 @@ public class CommentServiceImpl implements CommentService {
             throw new Exception("comment with id = " + id + " not found. ");
         }
     }
+
+    @Override
+    public User getUserbyCommentId(long id) {
+
+        return this.commentRepository.findById(id).get().getComment_owner();
+    }
 }

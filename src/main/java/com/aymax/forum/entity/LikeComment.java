@@ -21,4 +21,8 @@ public class LikeComment implements Serializable {
     private Date dateoflike;
 
 
+    public LikeComment(LikeComment lk) {
+        this.likeCommentPk = lk.getLikeCommentPk();
+        this.dateoflike = lk.getDateoflike();
+    }
 }
