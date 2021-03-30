@@ -25,7 +25,11 @@ public class LikePostController {
         return likeService.isLiked(idUser,idComment);
     }
     @GetMapping("count/{idPost}")
-    public int countCommentLikes(@PathVariable("idPost") Long idPost){
+    public int countPostLikes(@PathVariable("idPost") Long idPost){
         return likeService.countPostLikes(idPost);
+    }
+    @GetMapping("count/all/{idPost}")
+    public int countAllPostAndCommentsLikes(@PathVariable("idPost") Long idPost){
+        return likeService.countAllPostAndCommentsLikes(idPost);
     }
 }

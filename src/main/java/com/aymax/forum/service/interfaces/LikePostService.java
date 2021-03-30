@@ -11,4 +11,6 @@ public interface LikePostService {
 
     int countPostLikes(long idPost);
 
+    int countAllPostAndCommentsLikes(long idPost);
+
 }
