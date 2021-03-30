@@ -15,9 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -99,5 +98,39 @@ public class PostServiceImpl implements PostService {
     @Override
     public int getNBCommentsOfPost(long post_id) {
         return this.commentRepository.countCommentsByBelong_post(post_id);
+    }
+
+    @Override
+    public Map<Long,String> getDateDiffofPost(Long id) {
+        List<Post> p = new ArrayList<>();
+        if(id != 0) {
+            User u = this.userRepository.findById(id).get();
+            p = this.postRepository.findByPost_owner(u);
+        }
+        else {
+            p = this.postRepository.findAll();
+        }
+        Map<Long,String> ls = new HashMap<Long,String>();
+        for (Post ps : p) {
+            if(ps.getDateofpublication() == null) {
+                continue;
+            }
+            long diff = new Date().getTime() - ps.getDateofpublication().getTime();
+            long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+            if(diffMinutes > 60){
+                long diffHours = TimeUnit.MILLISECONDS.toHours(diff);
+                if(diffHours > 24 ){
+                    long diffDays = TimeUnit.MILLISECONDS.toDays(diff);
+                    ls.put(ps.getId(),"posted "+diffDays+" days ago.");
+                }
+                else{
+                    ls.put(ps.getId(),"posted "+diffHours+" hours ago.");
+                }
+            }
+            else{
+                ls.put(ps.getId(),"posted "+diffMinutes+" minutes ago.");
+            }
+        }
+        return ls;
     }
 }
