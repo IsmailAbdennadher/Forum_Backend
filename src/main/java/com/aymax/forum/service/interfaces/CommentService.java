@@ -14,4 +14,5 @@ public interface CommentService {
     List<Comment> getUserCommentsOfPost(long post_id,long user_id);
     void deleteComment(long id) throws Exception;
     User getUserbyCommentId(long id);
+    int countCommentsByUser(long idUser);
 }

@@ -3,6 +3,7 @@ package com.aymax.forum.service.interfaces;
 import com.aymax.forum.entity.Post;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PostService {
     Post createPost(Post post) throws Exception;
@@ -12,4 +13,5 @@ public interface PostService {
     void deletePost(long id) throws Exception;
     List<Post> getAllPosts();
     int getNBCommentsOfPost(long post_id);
+    Map<Long,String> getDateDiffofPost(Long id);
 }

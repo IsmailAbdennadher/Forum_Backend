@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -55,5 +56,9 @@ public class PostController {
     @GetMapping("get/number/{postid}")
     public int getNBCommentsOfPost(@PathVariable long postid){
         return this.postService.getNBCommentsOfPost(postid);
+    }
+    @GetMapping("get/date/time/{id}")
+    public Map<Long,String> getDateDiff(@PathVariable Long id){
+        return this.postService.getDateDiffofPost(id);
     }
 }

@@ -64,4 +64,10 @@ public class LikePostServiceImpl implements LikePostService {
     public int countPostLikes(long idPost) {
         return this.repository.countPostLikes(idPost);
     }
+
+    @Override
+    public int countAllPostAndCommentsLikes(long idPost) {
+        return this.repository.countPostAndCommentsLikes(idPost);
+    }
+
 }

@@ -20,7 +20,7 @@ public class Post implements Serializable {
     private Long id;
     private String title;
     private String post_text;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateofpublication;
     private String attachement;
     @ManyToOne(optional = false)
