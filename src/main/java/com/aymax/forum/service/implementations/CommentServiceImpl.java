@@ -101,4 +101,9 @@ public class CommentServiceImpl implements CommentService {
 
         return this.commentRepository.findById(id).get().getComment_owner();
     }
+
+    @Override
+    public int countCommentsByUser(long idUser) {
+        return this.commentRepository.countCommentsByUser(idUser);
+    }
 }

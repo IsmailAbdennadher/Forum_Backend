@@ -56,4 +56,8 @@ public class CommentController {
     public User getUserByComment(@PathVariable long commentid){
         return this.commentService.getUserbyCommentId(commentid);
     }
+    @GetMapping("count/user/{userId}")
+    public int getCountCommentsByUser(@PathVariable long userId){
+        return this.commentService.countCommentsByUser(userId);
+    }
 }
