@@ -1,7 +1,7 @@
 package com.aymax.forum.controller;
 
-import com.aymax.forum.entity.Comment;
-import com.aymax.forum.entity.Post;
+import com.aymax.forum.dto.PostDto;
+import com.aymax.forum.mapper.PostMapper;
 import com.aymax.forum.service.interfaces.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,36 +17,44 @@ public class PostController {
 
     private final PostService postService;
 
-    public PostController(PostService postService) {
+    private final PostMapper postMapper;
+
+    public PostController(PostService postService,PostMapper postMapper) {
         this.postService = postService;
+        this.postMapper = postMapper;
     }
 
     @PostMapping("/create")
-    public Post createPost(@RequestBody Post post ) throws Exception {
-        return this.postService.createPost(post);
+    public PostDto createPost(@RequestBody PostDto post ) throws Exception {
+        return postMapper.toDto(this.postService.createPost(post));
     }
     @PostMapping("/update")
-    public Post updatePost(@RequestBody Post post ) throws Exception {
-        return this.postService.updatePost(post);
+    public PostDto updatePost(@RequestBody PostDto post ) throws Exception {
+        return postMapper.toDto(this.postService.updatePost(post));
     }
     @GetMapping("get/{postid}")
-    public Post getPost(@PathVariable long postid){
-        return this.postService.getPost(postid);
+    public PostDto getPost(@PathVariable long postid){
+        PostDto p = postMapper.toDto(this.postService.getPost(postid));
+        p.setLikes(postService.getNBCommentsOfPost(postid));
+        p.setDateSincePosted(postService.getDateDiffofPost(postid));
+        return p;
     }
     @GetMapping("user/{userid}")
-    public List<Post> getUserPosts(@PathVariable long userid){
-        return this.postService.getUserAllPosts(userid);
+    public List<PostDto> getUserPosts(@PathVariable long userid){
+        List<PostDto> p = postMapper.toDtoList(this.postService.getUserAllPosts(userid));
+        return this.postService.getListDateDiffofPost(p);
     }
     @GetMapping("/all")
-    public List<Post> getAllPosts(){
-        return this.postService.getAllPosts();
+    public List<PostDto> getAllPosts(){
+        List<PostDto> p = postMapper.toDtoList(this.postService.getAllPosts());
+        return this.postService.getListDateDiffofPost(p);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Post> deletePost(@PathVariable long id){
+    public ResponseEntity<PostDto> deletePost(@PathVariable long id){
         try
         {
             this.postService.deletePost(id);
-            return new ResponseEntity<Post>(HttpStatus.OK);
+            return new ResponseEntity<PostDto>(HttpStatus.OK);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -56,9 +64,5 @@ public class PostController {
     @GetMapping("get/number/{postid}")
     public int getNBCommentsOfPost(@PathVariable long postid){
         return this.postService.getNBCommentsOfPost(postid);
-    }
-    @GetMapping("get/date/time/{id}")
-    public Map<Long,String> getDateDiff(@PathVariable Long id){
-        return this.postService.getDateDiffofPost(id);
     }
 }

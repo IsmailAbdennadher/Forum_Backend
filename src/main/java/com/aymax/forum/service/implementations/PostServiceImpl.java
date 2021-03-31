@@ -1,5 +1,6 @@
 package com.aymax.forum.service.implementations;
 
+import com.aymax.forum.dto.PostDto;
 import com.aymax.forum.entity.LikePostPk;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.entity.User;
@@ -34,9 +35,10 @@ public class PostServiceImpl implements PostService {
     private LikePostRepository likePostRepository;
 
     @Override
-    public Post createPost(Post post) {
+    public Post createPost(PostDto p) {
+        Post post = postRepository.getOne(p.getId());
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(post != null && userDetails.getId() != null) {
+        if(userDetails.getId() != null) {
             long id = userDetails.getId();
             User u = this.userRepository.findById(id).get();
             post.setPost_owner(u);
@@ -47,9 +49,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Post post) {
+    public Post updatePost(PostDto postdto) {
+        Post post = postRepository.getOne(postdto.getId());
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(post != null && userDetails.getId() != null){
+        if(userDetails.getId() != null){
             Optional<Post> p = this.postRepository.findById(post.getId());
             Post updatedPost = p.get();
             long id = userDetails.getId();
@@ -101,36 +104,37 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Map<Long,String> getDateDiffofPost(Long id) {
-        List<Post> p = new ArrayList<>();
-        if(id != 0) {
-            User u = this.userRepository.findById(id).get();
-            p = this.postRepository.findByPost_owner(u);
+    public List<PostDto> getListDateDiffofPost(List<PostDto> p) {
+        for (PostDto ps : p) {
+            ps.setLikes(likePostRepository.countPostLikes(ps.getId()));
+            ps.setDateSincePosted(getDateDiffofPost(ps.getId()));
         }
-        else {
-            p = this.postRepository.findAll();
+        return p;
+    }
+
+    @Override
+    public String getDateDiffofPost(Long idpost) {
+        Post ps = postRepository.getOne(idpost);
+        if(ps.getDateofpublication() == null) {
+            return "";
         }
-        Map<Long,String> ls = new HashMap<Long,String>();
-        for (Post ps : p) {
-            if(ps.getDateofpublication() == null) {
-                continue;
-            }
-            long diff = new Date().getTime() - ps.getDateofpublication().getTime();
-            long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-            if(diffMinutes > 60){
-                long diffHours = TimeUnit.MILLISECONDS.toHours(diff);
-                if(diffHours > 24 ){
-                    long diffDays = TimeUnit.MILLISECONDS.toDays(diff);
-                    ls.put(ps.getId(),"posted "+diffDays+" days ago.");
+        long diff = new Date().getTime() - ps.getDateofpublication().getTime();
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+        if(diffMinutes > 60){
+            long diffHours = TimeUnit.MILLISECONDS.toHours(diff);
+            if(diffHours > 24 ){
+                long diffDays = TimeUnit.MILLISECONDS.toDays(diff);
+                if(diffDays > 6){
+                    return ps.getDateofpublication().toString();
                 }
-                else{
-                    ls.put(ps.getId(),"posted "+diffHours+" hours ago.");
-                }
+                return "posted "+diffDays+" days ago.";
             }
             else{
-                ls.put(ps.getId(),"posted "+diffMinutes+" minutes ago.");
+                return "posted "+diffHours+" hours ago.";
             }
         }
-        return ls;
+        else{
+            return "posted "+diffMinutes+" minutes ago.";
+        }
     }
 }

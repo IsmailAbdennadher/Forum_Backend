@@ -1,7 +1,9 @@
 package com.aymax.forum.controller;
 
-import com.aymax.forum.entity.Comment;
-import com.aymax.forum.entity.User;
+import com.aymax.forum.dto.CommentDto;
+import com.aymax.forum.dto.UserDto;
+import com.aymax.forum.mapper.CommentMapper;
+import com.aymax.forum.mapper.UserMapper;
 import com.aymax.forum.service.interfaces.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,36 +18,42 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
+    private final CommentMapper commentMapper;
+
+    private final UserMapper userMapper;
+
+    public CommentController(CommentService commentService ,CommentMapper commentMapper,UserMapper userMapper) {
         this.commentService = commentService;
+        this.commentMapper = commentMapper;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/create")
-    public Comment createComment(@RequestBody Comment comment ){
-        return this.commentService.createComment(comment);
+    public CommentDto createComment(@RequestBody CommentDto comment ){
+        return commentMapper.toDto(this.commentService.createComment(comment));
     }
     @PostMapping("/update")
-    public Comment updateComment(@RequestBody Comment comment){
-        return this.commentService.updateComment(comment);
+    public CommentDto updateComment(@RequestBody CommentDto comment){
+        return commentMapper.toDto(this.commentService.updateComment(comment));
     }
     @GetMapping("post/get/{postid}")
-    public List<Comment> getCommentsOfPost(@PathVariable long postid){
-        return this.commentService.getCommentsOfPost(postid);
+    public List<CommentDto> getCommentsOfPost(@PathVariable long postid){
+        return commentMapper.toDtoList(this.commentService.getCommentsOfPost(postid));
     }
     @GetMapping("/{postid}/{userid}")
-    public List<Comment> getUserCommentsOfPost(@PathVariable long postid,@PathVariable long userid){
-        return this.commentService.getUserCommentsOfPost(postid,userid);
+    public List<CommentDto> getUserCommentsOfPost(@PathVariable long postid,@PathVariable long userid){
+        return commentMapper.toDtoList(this.commentService.getUserCommentsOfPost(postid,userid));
     }
     @GetMapping("get/{commentid}")
-    public Comment getCommentById(@PathVariable long commentid){
-        return this.commentService.getById(commentid);
+    public CommentDto getCommentById(@PathVariable long commentid){
+        return commentMapper.toDto(this.commentService.getById(commentid));
     }
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable long id) throws Exception {
+    public ResponseEntity<CommentDto> deleteComment(@PathVariable long id) throws Exception {
         try
         {
             this.commentService.deleteComment(id);
-            return new ResponseEntity<Comment>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -53,8 +61,8 @@ public class CommentController {
         return null;
     }
     @GetMapping("get/user/{commentid}")
-    public User getUserByComment(@PathVariable long commentid){
-        return this.commentService.getUserbyCommentId(commentid);
+    public UserDto getUserByComment(@PathVariable long commentid){
+        return userMapper.toDto(this.commentService.getUserbyCommentId(commentid));
     }
     @GetMapping("count/user/{userId}")
     public int getCountCommentsByUser(@PathVariable long userId){

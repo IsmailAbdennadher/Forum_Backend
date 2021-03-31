@@ -1,5 +1,6 @@
 package com.aymax.forum.service.implementations;
 
+import com.aymax.forum.dto.CommentDto;
 import com.aymax.forum.entity.*;
 import com.aymax.forum.repository.CommentRepository;
 import com.aymax.forum.repository.LikeCommentRepository;
@@ -28,7 +29,8 @@ public class CommentServiceImpl implements CommentService {
     private LikeCommentRepository likeCommentRepository;
 
     @Override
-    public Comment createComment(Comment comment) {
+    public Comment createComment(CommentDto commentdto) {
+        Comment comment = this.commentRepository.getOne(commentdto.getId());
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long id = userDetails.getId();
         User u = this.userRepository.findById(id).get();
@@ -41,7 +43,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Comment comment) {
+    public Comment updateComment(CommentDto commentdto) {
+        Comment comment = this.commentRepository.getOne(commentdto.getId());
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long id = userDetails.getId();
         User u = this.userRepository.findById(id).get();
