@@ -1,6 +1,7 @@
 package com.aymax.forum.service.implementations;
 
 import com.aymax.forum.dto.CommentDto;
+import com.aymax.forum.dto.PostDto;
 import com.aymax.forum.entity.*;
 import com.aymax.forum.repository.CommentRepository;
 import com.aymax.forum.repository.LikeCommentRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -29,8 +31,7 @@ public class CommentServiceImpl implements CommentService {
     private LikeCommentRepository likeCommentRepository;
 
     @Override
-    public Comment createComment(CommentDto commentdto) {
-        Comment comment = this.commentRepository.getOne(commentdto.getId());
+    public Comment createComment(Comment comment) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long id = userDetails.getId();
         User u = this.userRepository.findById(id).get();
@@ -108,5 +109,40 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public int countCommentsByUser(long idUser) {
         return this.commentRepository.countCommentsByUser(idUser);
+    }
+
+    @Override
+    public List<CommentDto> getListDateDiffofComment(List<CommentDto> p) {
+        for (CommentDto c : p) {
+            c.setLikes(likeCommentRepository.countCommentLikesByComment(c.getId()));
+            c.setDateSinceCommented(getDateDiffofComment(c.getId()));
+        }
+        return p;
+    }
+
+    @Override
+    public String getDateDiffofComment(Long idComment) {
+        Comment c = commentRepository.getOne(idComment);
+        if(c.getDateofpublication() == null) {
+            return "";
+        }
+        long diff = new Date().getTime() - c.getDateofpublication().getTime();
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+        if(diffMinutes > 60){
+            long diffHours = TimeUnit.MILLISECONDS.toHours(diff);
+            if(diffHours > 24 ){
+                long diffDays = TimeUnit.MILLISECONDS.toDays(diff);
+                if(diffDays > 6){
+                    return c.getDateofpublication().toString();
+                }
+                return "posted "+diffDays+" days ago.";
+            }
+            else{
+                return "posted "+diffHours+" hours ago.";
+            }
+        }
+        else{
+            return "posted "+diffMinutes+" minutes ago.";
+        }
     }
 }

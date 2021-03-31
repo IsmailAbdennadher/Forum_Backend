@@ -1,8 +1,11 @@
 package com.aymax.forum.controller;
 
 import com.aymax.forum.dto.PostDto;
+import com.aymax.forum.entity.Post;
 import com.aymax.forum.mapper.PostMapper;
+import com.aymax.forum.repository.LikePostRepository;
 import com.aymax.forum.service.interfaces.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +22,17 @@ public class PostController {
 
     private final PostMapper postMapper;
 
-    public PostController(PostService postService,PostMapper postMapper) {
+    @Autowired
+    private LikePostRepository likePostRepository;
+
+    public PostController(PostService postService,PostMapper postMapper,LikePostRepository likePostRepository) {
         this.postService = postService;
         this.postMapper = postMapper;
+        this.likePostRepository = likePostRepository;
     }
 
     @PostMapping("/create")
-    public PostDto createPost(@RequestBody PostDto post ) throws Exception {
+    public PostDto createPost(@RequestBody Post post ) throws Exception {
         return postMapper.toDto(this.postService.createPost(post));
     }
     @PostMapping("/update")
@@ -35,7 +42,7 @@ public class PostController {
     @GetMapping("get/{postid}")
     public PostDto getPost(@PathVariable long postid){
         PostDto p = postMapper.toDto(this.postService.getPost(postid));
-        p.setLikes(postService.getNBCommentsOfPost(postid));
+        p.setLikes(likePostRepository.countPostLikes(postid));
         p.setDateSincePosted(postService.getDateDiffofPost(postid));
         return p;
     }

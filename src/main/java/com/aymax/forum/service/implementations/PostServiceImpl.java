@@ -35,15 +35,15 @@ public class PostServiceImpl implements PostService {
     private LikePostRepository likePostRepository;
 
     @Override
-    public Post createPost(PostDto p) {
-        Post post = postRepository.getOne(p.getId());
+    public Post createPost(Post p) {
+
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(userDetails.getId() != null) {
             long id = userDetails.getId();
             User u = this.userRepository.findById(id).get();
-            post.setPost_owner(u);
-            post.setDateofpublication(new Date());
-            return this.postRepository.save(post);
+            p.setPost_owner(u);
+            p.setDateofpublication(new Date());
+            return this.postRepository.save(p);
         }
         throw new NullPointerException("le post ou utilisateur fournit est null");
     }

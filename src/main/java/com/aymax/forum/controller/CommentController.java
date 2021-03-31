@@ -1,10 +1,14 @@
 package com.aymax.forum.controller;
 
 import com.aymax.forum.dto.CommentDto;
+import com.aymax.forum.dto.PostDto;
 import com.aymax.forum.dto.UserDto;
+import com.aymax.forum.entity.Comment;
 import com.aymax.forum.mapper.CommentMapper;
 import com.aymax.forum.mapper.UserMapper;
+import com.aymax.forum.repository.LikeCommentRepository;
 import com.aymax.forum.service.interfaces.CommentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +26,19 @@ public class CommentController {
 
     private final UserMapper userMapper;
 
-    public CommentController(CommentService commentService ,CommentMapper commentMapper,UserMapper userMapper) {
+    @Autowired
+    private final LikeCommentRepository likeCommentRepository;
+
+    public CommentController(CommentService commentService ,CommentMapper commentMapper,UserMapper userMapper,
+                             LikeCommentRepository likeCommentRepository) {
         this.commentService = commentService;
         this.commentMapper = commentMapper;
         this.userMapper = userMapper;
+        this.likeCommentRepository = likeCommentRepository;
     }
 
     @PostMapping("/create")
-    public CommentDto createComment(@RequestBody CommentDto comment ){
+    public CommentDto createComment(@RequestBody Comment comment ){
         return commentMapper.toDto(this.commentService.createComment(comment));
     }
     @PostMapping("/update")
@@ -38,15 +47,20 @@ public class CommentController {
     }
     @GetMapping("post/get/{postid}")
     public List<CommentDto> getCommentsOfPost(@PathVariable long postid){
-        return commentMapper.toDtoList(this.commentService.getCommentsOfPost(postid));
+        List<CommentDto> c = commentMapper.toDtoList(this.commentService.getCommentsOfPost(postid));
+        return this.commentService.getListDateDiffofComment(c);
     }
     @GetMapping("/{postid}/{userid}")
     public List<CommentDto> getUserCommentsOfPost(@PathVariable long postid,@PathVariable long userid){
-        return commentMapper.toDtoList(this.commentService.getUserCommentsOfPost(postid,userid));
+        List<CommentDto> c = commentMapper.toDtoList(this.commentService.getUserCommentsOfPost(postid,userid));
+        return this.commentService.getListDateDiffofComment(c);
     }
     @GetMapping("get/{commentid}")
     public CommentDto getCommentById(@PathVariable long commentid){
-        return commentMapper.toDto(this.commentService.getById(commentid));
+        CommentDto p = commentMapper.toDto(this.commentService.getById(commentid));
+        p.setLikes(likeCommentRepository.countCommentLikesByComment(commentid));
+        p.setDateSinceCommented(commentService.getDateDiffofComment(commentid));
+        return p;
     }
     @DeleteMapping("delete/{id}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable long id) throws Exception {

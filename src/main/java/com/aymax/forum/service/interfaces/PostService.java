@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PostService {
-    Post createPost(PostDto post) throws Exception;
+    Post createPost(Post post) throws Exception;
     Post updatePost(PostDto post);
     Post getPost(long post_id);
     List<Post> getUserAllPosts(long user_id);
