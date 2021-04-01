@@ -1,10 +1,8 @@
 package com.aymax.forum.service.implementations;
 
-import com.aymax.forum.entity.LikeComment;
-import com.aymax.forum.entity.LikeCommentPk;
-import com.aymax.forum.entity.LikePost;
-import com.aymax.forum.entity.LikePostPk;
+import com.aymax.forum.entity.*;
 import com.aymax.forum.repository.LikePostRepository;
+import com.aymax.forum.repository.PostRepository;
 import com.aymax.forum.service.interfaces.LikePostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,8 @@ public class LikePostServiceImpl implements LikePostService {
 
     @Autowired
     private LikePostRepository repository;
+    @Autowired
+    private PostRepository postRepository;
 
     public ResponseEntity<LikePost> like(Long idUser , Long idPost){
         LikePostPk likePostPk = new LikePostPk();
@@ -67,6 +67,10 @@ public class LikePostServiceImpl implements LikePostService {
 
     @Override
     public int countAllPostAndCommentsLikes(long idPost) {
+        Post p =this.postRepository.getOne(idPost);
+        if(p.getComments().isEmpty()){
+            return this.countPostLikes(idPost);
+        }
         return this.repository.countPostAndCommentsLikes(idPost);
     }
 

@@ -17,8 +17,8 @@ public interface LikePostRepository extends JpaRepository<LikePost, Long> {
     @Query(value = "SELECT count(*) FROM Like_Post a WHERE a.post_id = ?1",nativeQuery = true)
     int countPostLikes(long idPost);
 
-    @Query(value = "SELECT count(*) FROM forum.Like_Post JOIN forum.like_comment JOIN forum.comment \n" +
-            "ON like_post.post_id = comment.belong_post_id AND comment.id=like_comment.comment_id \n" +
-            "WHERE like_post.post_id = ?1 ;",nativeQuery = true)
+    @Query(value = "SELECT count(*) + count(distinct lp.post_id) FROM forum.comment as c left join forum.like_comment as lc on lc.comment_id=c.id \n" +
+            "LEFT join forum.like_post as lp on lp.post_id = c.belong_post_id \n" +
+            "where c.belong_post_id = ?1 and lc.comment_id is not null ;",nativeQuery = true)
     int countPostAndCommentsLikes(long idPost);
 }
