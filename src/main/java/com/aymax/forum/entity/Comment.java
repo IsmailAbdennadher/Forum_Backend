@@ -36,7 +36,7 @@ public class Comment implements Serializable {
         this.comment_text = comment_text;
     }
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateofpublication() {
         return dateofpublication;
     }

@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query(value = "select a from Post a where a.post_owner = ?1")
+    @Query(value = "select a from Post a where a.post_owner = ?1 order by a.dateofpublication desc")
     List<Post> findByPost_owner(User user);
 }

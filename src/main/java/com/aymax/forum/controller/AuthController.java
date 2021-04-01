@@ -17,12 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -70,5 +65,18 @@ public class AuthController {
         userRepository.save(signUpRequest);
 
         return ResponseEntity.ok().body("User registered successfully!");
+    }
+    @GetMapping("/user/{userid}")
+    public User getUserById(@PathVariable long userid){
+        return this.userRepository.findById(userid).get();
+    }
+    @PostMapping("/user/edit/{userid}")
+    public User getUserById(@RequestBody User user,@PathVariable long userid){
+        User u = this.userRepository.findById(userid).get();
+        u.setEmail(user.getEmail());
+        u.setDateofbirth(user.getDateofbirth());
+        u.setName(user.getName());
+        u.setPhone(user.getPhone());
+        return this.userRepository.save(u);
     }
 }
