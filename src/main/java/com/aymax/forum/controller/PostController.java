@@ -1,9 +1,12 @@
 package com.aymax.forum.controller;
 
+import com.aymax.forum.dto.CommentDto;
 import com.aymax.forum.dto.PostDto;
 import com.aymax.forum.entity.Post;
 import com.aymax.forum.mapper.PostMapper;
+import com.aymax.forum.repository.LikeCommentRepository;
 import com.aymax.forum.repository.LikePostRepository;
+import com.aymax.forum.service.interfaces.CommentService;
 import com.aymax.forum.service.interfaces.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,13 +25,21 @@ public class PostController {
 
     private final PostMapper postMapper;
 
-    @Autowired
-    private LikePostRepository likePostRepository;
+    private final CommentService commentService;
 
-    public PostController(PostService postService,PostMapper postMapper,LikePostRepository likePostRepository) {
+    @Autowired
+    private final LikePostRepository likePostRepository;
+
+    @Autowired
+    private final LikeCommentRepository likeCommentRepository;
+
+    public PostController(PostService postService,PostMapper postMapper,LikePostRepository likePostRepository,
+    CommentService commentService,LikeCommentRepository likeCommentRepository) {
         this.postService = postService;
         this.postMapper = postMapper;
         this.likePostRepository = likePostRepository;
+        this.commentService = commentService;
+        this.likeCommentRepository = likeCommentRepository;
     }
 
     @PostMapping("/create")
@@ -44,16 +55,32 @@ public class PostController {
         PostDto p = postMapper.toDto(this.postService.getPost(postid));
         p.setLikes(likePostRepository.countPostLikes(postid));
         p.setDateSincePosted(postService.getDateDiffofPost(postid));
+        for(CommentDto c : p.getComments()){
+            c.setDateSinceCommented(this.commentService.getDateDiffofComment(c.getId()));
+            c.setLikes(this.likeCommentRepository.countCommentLikesByComment(c.getId()));
+        }
         return p;
     }
     @GetMapping("user/{userid}")
     public List<PostDto> getUserPosts(@PathVariable long userid){
         List<PostDto> p = postMapper.toDtoList(this.postService.getUserAllPosts(userid));
+        for(PostDto ps : p){
+            for(CommentDto c : ps.getComments()){
+                c.setDateSinceCommented(this.commentService.getDateDiffofComment(c.getId()));
+                c.setLikes(this.likeCommentRepository.countCommentLikesByComment(c.getId()));
+            }
+        }
         return this.postService.getListDateDiffofPost(p);
     }
     @GetMapping("/all")
     public List<PostDto> getAllPosts(){
         List<PostDto> p = postMapper.toDtoList(this.postService.getAllPosts());
+        for(PostDto ps : p){
+            for(CommentDto c : ps.getComments()){
+                c.setDateSinceCommented(this.commentService.getDateDiffofComment(c.getId()));
+                c.setLikes(this.likeCommentRepository.countCommentLikesByComment(c.getId()));
+            }
+        }
         return this.postService.getListDateDiffofPost(p);
     }
     @DeleteMapping("/delete/{id}")
